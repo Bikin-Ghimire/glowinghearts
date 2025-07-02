@@ -24,7 +24,7 @@ function formatDate(dateString: string) {
 
 export default function PrizesTable({ prizes }: PrizesTableProps) {
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-2">
       <div className="-mx-4 mt-8 sm:-mx-0 overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
         <table className="table-fixed w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
