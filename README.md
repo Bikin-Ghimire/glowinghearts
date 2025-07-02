@@ -1,6 +1,6 @@
 # Glowing Hearts Fundraising
 
-Glowing Hearts website is built using [Tailwind Plus](https://tailwindcss.com/plus) and [Next.js](https://nextjs.org), with a blog powered by [Sanity](https://www.sanity.io).
+Glowing Hearts website is built using [Tailwind Plus](https://tailwindcss.com/plus) and [Next.js](https://nextjs.org).
 
 ## 📦 Getting Started
 
