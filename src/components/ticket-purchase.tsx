@@ -1,5 +1,8 @@
 'use client'
 import { useState } from 'react'
+import { loadStripe } from '@stripe/stripe-js'
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export interface TicketTier {
   id: number | string
@@ -29,6 +32,32 @@ export default function TicketPurchase({ tickets }: TicketPurchaseProps) {
     (sum, t) => sum + (counts[t.id] || 0) * t.price,
     0
   )
+
+  const handleCheckout = async () => {
+    // build an array of selected tickets with quantity
+    const selectedTickets = tickets
+      .filter(t => (counts[t.id] || 0) > 0)
+      .map(t => ({
+        number_of_tickets: t.number_of_tickets,
+        price: t.price,
+        quantity: counts[t.id] || 0,
+      }))
+
+    if (selectedTickets.length === 0) return
+
+    // call your backend to create a Stripe Checkout session
+    const res = await fetch('/api/checkout-sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tickets: selectedTickets }),
+    })
+    const { sessionId } = await res.json()
+
+    // redirect to Stripe Checkout
+    const stripe = await stripePromise
+    const { error } = await stripe!.redirectToCheckout({ sessionId })
+    if (error) console.error(error)
+  }
 
   return (
     <div className="max-w-md mx-auto space-y-6">
@@ -67,10 +96,11 @@ export default function TicketPurchase({ tickets }: TicketPurchaseProps) {
 
       {/* Purchase button */}
       <button
+        onClick={handleCheckout}
         disabled={total === 0}
         className="w-full py-2 rounded bg-indigo-600 text-white cursor-pointer hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Purchase Tickets
+        {total === 0 ? 'Purchase Tickets' : 'Checkout'}
       </button>
     </div>
   )
