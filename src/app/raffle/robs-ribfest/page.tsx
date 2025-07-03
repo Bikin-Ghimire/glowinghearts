@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 const CountdownTimer = dynamic(() => import('@/components/countdown-timer'), { ssr: false })
 import TicketPurchase from '@/components/ticket-purchase'
-import PrizesTable, { Prize } from '@/components/prizes'
+import PrizesTable from '@/components/prizes'
 
 export const metadata: Metadata = {
   title: "Rob's Ribfest",
@@ -101,7 +101,7 @@ const rules = `
   </ol>
 `;
 
-function classNames(...classes) {
+function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 

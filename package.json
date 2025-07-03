@@ -27,6 +27,7 @@
     "react-input-mask": "^2.0.4",
     "react-use-measure": "^2.1.1",
     "sanity": "^2.36.6",
+    "socket.io-client": "^4.8.1",
     "stripe": "^18.3.0"
   },
   "devDependencies": {
