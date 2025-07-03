@@ -1,3 +1,4 @@
+'use client';
 import { Fragment } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
@@ -13,11 +14,12 @@ import TicketPurchase from '@/components/ticket-purchase'
 import PrizesTable, { type Prize } from '@/components/prizes'
 import { useRouter } from 'next/router'
 
-export const metadata: Metadata = {
-  title: "Rob's Ribfest",
-  description:
-    'Rob\'s Ribfest is a community event that brings together food lovers and local charities. Enjoy delicious ribs while supporting a good cause.',
-}
+// export const metadata: Metadata = {
+//   title: "Rob's Ribfest",
+//   description:
+//     'Rob\'s Ribfest is a community event that brings together food lovers and local charities. Enjoy delicious ribs while supporting a good cause.',
+// }
+
 
 const raffle = {
   Guid: 'r50-001',
