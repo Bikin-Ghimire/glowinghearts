@@ -10,7 +10,8 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 const CountdownTimer = dynamic(() => import('@/components/countdown-timer'), { ssr: false })
 import TicketPurchase from '@/components/ticket-purchase'
-import PrizesTable from '@/components/prizes'
+import PrizesTable, { Prize } from '@/components/prizes'
+import { useRouter } from 'next/router'
 
 export const metadata: Metadata = {
   title: "Rob's Ribfest",
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 }
 
 const raffle = {
+  Guid: 'r50-001',
   name: 'Rob\'s Ribfest',
   amount_raised: 220295,
   start_date: '2025-06-01',
@@ -159,7 +161,7 @@ function Raffle() {
 
             {/* Ticket Purchase */}
             <div className="mt-10 border-t border-gray-200 pt-10">
-              <TicketPurchase tickets={raffle.tickets} />
+              <TicketPurchase tickets={raffle.tickets} raffleID={raffle.Guid} />
             </div>
           </div>
 

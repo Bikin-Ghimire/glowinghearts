@@ -14,9 +14,10 @@ export interface TicketTier {
 interface TicketPurchaseProps {
   /** Pass in your raffle.tickets array */
   tickets: TicketTier[]
+  raffleID: string
 }
 
-export default function TicketPurchase({ tickets }: TicketPurchaseProps) {
+export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProps) {
   // initialize counts keyed by id
   const [counts, setCounts] = useState<Record<string, number>>(
     tickets.reduce((acc, t) => ({ ...acc, [t.id]: 0 }), {})
@@ -43,13 +44,19 @@ export default function TicketPurchase({ tickets }: TicketPurchaseProps) {
         quantity: counts[t.id] || 0,
       }))
 
+      // build payload with raffle Guid
+      const payload = {
+        tickets: selectedTickets,
+        id: raffleID,
+      }
+
     if (selectedTickets.length === 0) return
 
     // call your backend to create a Stripe Checkout session
     const res = await fetch('/api/checkout-sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tickets: selectedTickets }),
+      body: JSON.stringify(payload),
     })
     const { sessionId } = await res.json()
 
