@@ -1,52 +1,70 @@
-# Radiant
+# Glowing Hearts Fundraising
 
-Radiant is a [Tailwind Plus](https://tailwindcss.com/plus) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org), with a blog powered by [Sanity](https://www.sanity.io).
+Glowing Hearts website is built using [Tailwind Plus](https://tailwindcss.com/plus) and [Next.js](https://nextjs.org).
 
-## Getting started
+## 📦 Getting Started
 
-To get started with this template, first install the npm dependencies:
+### Prerequisites
+- **Node.js** v14 or later
+- **npm** v6+ (or **Yarn**)
 
+### Installation
 ```bash
+# Clone this repository
+git clone https://github.com/Bikin-Ghimire/glowinghearts.git
+cd glowinghearts
+
+# Install dependencies
 npm install
+# or yarn install
 ```
 
-Next, create a new Sanity project to power the blog within this template:
-
+### Running Locally
 ```bash
-npm create sanity@latest -- --env=.env.local --create-project "Radiant Blog" --dataset production
-```
-
-This will prompt you to create a new Sanity account if you don't have one already. When asked "Would you like to add configuration files for a Sanity project in this Next.js folder?", choose "n".
-
-Next, optionally import the demo seed data for the blog:
-
-```bash
-npx sanity@latest dataset import seed.tar.gz
-```
-
-Next, run the development server:
-
-```bash
+# Start the development server
 npm run dev
+# or yarn dev
 ```
+Open your browser at `http://localhost:3000` to view the app. Changes auto‑reload.
 
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
+---
 
-To manage your blog content, visit the embedded Sanity Studio at [http://localhost:3000/studio](http://localhost:3000/studio).
+## 📁 Project Structure
 
-## Customizing
+```
+glowinghearts/
+├── src/                   # All website contents
+│   ├── app/               # Next.js App Router pages
+│   ├── components/        # Reusable UI components
+│   ├── styles/            # Global styles (tailwind.css and others, if any)
+├── public/                # Static assets
+├── tailwind.config.js     # Tailwind CSS configuration
+├── next.config.js         # Next.js configuration
+└── README.md              # This file
+```
+Other files and folders will be cleaned up as development progressess.
 
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+---
 
-## License
+## 🛠️ Technologies Used
+
+- [Next.js](https://nextjs.org/) (App Router)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Headless UI](https://headlessui.dev/)
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -m 'Add YourFeature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
 
 This site template is a commercial product and is licensed under the [Tailwind Plus license](https://tailwindcss.com/plus/license).
-
-## Learn more
-
-To learn more about the technologies used in this site template, see the following resources:
-
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [Sanity](https://www.sanity.io) - the Sanity website
