@@ -6,6 +6,7 @@ import { GradientBackground } from '@/components/gradient'
 import { Navbar } from '@/components/navbar'
 import { Heading, Lead, Subheading } from '@/components/text'
 import type { Metadata } from 'next'
+import {testRaffles} from '@/data/raffles'
 import RaffleList, { type Raffle } from '@/components/raffle-list'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
@@ -16,62 +17,60 @@ export const metadata: Metadata = {
     'Directory of all 50/50 raffles managed by glowing hearts fundraising.',
 }
 
-const raffles: Raffle[] = [
-  {
-    id: 1,
-    name: "Rob's Ribfest",
-    href: '/raffle/robs-ribfest',
-    imageSrc: 'https://i.ibb.co/ycznPrB5/ribfest.png',
-    imageAlt: "Rob's Ribfest event",
-    end_date: '2025-07-04T01:00:00',
-    amount_raised: 220295,
-  },
-  {
-    id: 2,
-    name: "The Foundation's 50/50 Raffle",
-    href: '#',
-    imageSrc: 'https://fondation.canadiens.com/app/uploads/2023/09/1920x1080-rouge-en-1024x576.png',
-    imageAlt: "The Foundation's 50/50 Raffle",
-    end_date: '2025-07-09T01:00:00',
-    amount_raised: 10295,
-  },
-  {
-    id: 3,
-    name: "50/50 Raffle | Fall Fundraiser | Etobicoke Human Society",
-    href: '#',
-    imageSrc: 'https://etobicokehumanesociety.com/wp-content/uploads/2023/10/5050Graphic-Blog-jpg.webp',
-    imageAlt: "50/50 Raffle | Fall Fundraiser | Etobicoke Human Society",
-    end_date: '2025-07-01T01:00:00',
-    amount_raised: 20295,
-  },
-  {
-    id: 4,
-    name: "RBC JCC Sports Dinner Cadillac and 50/50 Raffle",
-    href: '#',
-    imageSrc: 'https://homelottery.ca/wp-content/uploads/2025/01/Sports-Dinner-raffles-home-lottery-graphic.png',
-    imageAlt: "RBC JCC Sports Dinner Cadillac and 50/50 Raffle",
-    end_date: '2025-08-04T01:00:00',
-    amount_raised: 220125,
-  },
-  {
-    id: 5,
-    name: "50/50 Rogers Place",
-    href: '#',
-    imageSrc: 'https://images.rogersplace.com/wp-content/uploads/2024/07/08093636/RP5050_2425_GENERIC_1920X1080_opt-1024x576.jpg',
-    imageAlt: "50/50 Rogers Place",
-    end_date: '2025-07-07T01:00:00',
-    amount_raised: 110295,
-  },
-  {
-    id: 6,
-    name: "2024 Move to Cure ALS 50/50 Raffle",
-    href: '#',
-    imageSrc: 'https://www.alsbc.ca/wp-content/uploads/2024/01/2024-50-50-Raffle-Header-Image.png',
-    imageAlt: "2024 Move to Cure ALS 50/50 Raffle",
-    end_date: '2025-06-04T01:00:00',
-    amount_raised: 1220295,
-  },
-]
+const activeRaffles = testRaffles
+  .filter(r => new Date(r.obj_RaffleData.Dt_SalesClose) > new Date() && r.obj_RaffleData.Int_DrawStatus === 2)
+  .sort((a, b) => new Date(a.obj_RaffleData.Dt_SalesClose).getTime() - new Date(b.obj_RaffleData.Dt_SalesClose).getTime())
+
+// const raffles: Raffle[] = [
+//   {
+//     id: 1,
+//     name: "Rob's Ribfest",
+//     imageSrc: 'https://i.ibb.co/ycznPrB5/ribfest.png',
+//     imageAlt: "Rob's Ribfest event",
+//     end_date: '2025-07-04T01:00:00',
+//     amount_raised: 220295,
+//   },
+//   {
+//     id: 2,
+//     name: "The Foundation's 50/50 Raffle",
+//     imageSrc: 'https://fondation.canadiens.com/app/uploads/2023/09/1920x1080-rouge-en-1024x576.png',
+//     imageAlt: "The Foundation's 50/50 Raffle",
+//     end_date: '2025-07-09T01:00:00',
+//     amount_raised: 10295,
+//   },
+//   {
+//     id: 3,
+//     name: "50/50 Raffle | Fall Fundraiser | Etobicoke Human Society",
+//     imageSrc: 'https://etobicokehumanesociety.com/wp-content/uploads/2023/10/5050Graphic-Blog-jpg.webp',
+//     imageAlt: "50/50 Raffle | Fall Fundraiser | Etobicoke Human Society",
+//     end_date: '2025-07-01T01:00:00',
+//     amount_raised: 20295,
+//   },
+//   {
+//     id: 4,
+//     name: "RBC JCC Sports Dinner Cadillac and 50/50 Raffle",
+//     imageSrc: 'https://homelottery.ca/wp-content/uploads/2025/01/Sports-Dinner-raffles-home-lottery-graphic.png',
+//     imageAlt: "RBC JCC Sports Dinner Cadillac and 50/50 Raffle",
+//     end_date: '2025-08-04T01:00:00',
+//     amount_raised: 220125,
+//   },
+//   {
+//     id: 5,
+//     name: "50/50 Rogers Place",
+//     imageSrc: 'https://images.rogersplace.com/wp-content/uploads/2024/07/08093636/RP5050_2425_GENERIC_1920X1080_opt-1024x576.jpg',
+//     imageAlt: "50/50 Rogers Place",
+//     end_date: '2025-07-07T01:00:00',
+//     amount_raised: 110295,
+//   },
+//   {
+//     id: 6,
+//     name: "2024 Move to Cure ALS 50/50 Raffle",
+//     imageSrc: 'https://www.alsbc.ca/wp-content/uploads/2024/01/2024-50-50-Raffle-Header-Image.png',
+//     imageAlt: "2024 Move to Cure ALS 50/50 Raffle",
+//     end_date: '2025-06-04T01:00:00',
+//     amount_raised: 1220295,
+//   },
+// ]
 
 interface PageProps {
   searchParams: { page?: string }
@@ -81,19 +80,10 @@ export default function RafflesPage({ searchParams }: PageProps) {
   // 1) determine current page from ?page=
   const currentPage = Math.max(1, parseInt(searchParams.page || '1', 10))
 
-  // 2) filter out past raffles
-  const now = new Date()
-  const active = raffles.filter(r => new Date(r.end_date) > now)
-
-  // 3) sort ascending by end_date
-  active.sort((a, b) =>
-    new Date(a.end_date).getTime() - new Date(b.end_date).getTime()
-  )
-
   // 4) paginate
   const perPage = 3
-  const totalPages = Math.ceil(active.length / perPage)
-  const paginated = active.slice(
+  const totalPages = Math.ceil(activeRaffles.length / perPage)
+  const paginated = activeRaffles.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage
   )
