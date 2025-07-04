@@ -56,10 +56,10 @@ function Sitemap() {
         </SitemapLinks>
       </div>
       <div>
-        <SitemapHeading>Support</SitemapHeading>
+        <SitemapHeading>Platform</SitemapHeading>
         <SitemapLinks>
-          <SitemapLink href="#">Get a refund</SitemapLink>
-          <SitemapLink href="#">Contact support</SitemapLink>
+          <SitemapLink href="/raffles">Raffles</SitemapLink>
+          <SitemapLink href="/contact-us">Contact s</SitemapLink>
         </SitemapLinks>
       </div>
       <div>
@@ -146,7 +146,7 @@ export function Footer() {
       <Gradient className="relative">
         <div className="absolute inset-2 rounded-4xl bg-white/80" />
         <Container>
-          <CallToAction />
+          {/* <CallToAction /> */}
           <PlusGrid className="pb-16">
             <PlusGridRow>
               <div className="grid grid-cols-3 gap-y-10 pb-6 lg:grid-cols-5 lg:gap-8">
