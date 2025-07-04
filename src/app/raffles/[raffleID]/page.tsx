@@ -1,3 +1,4 @@
+'use client';
 import { Fragment } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
@@ -10,14 +11,15 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 const CountdownTimer = dynamic(() => import('@/components/countdown-timer'), { ssr: false })
 import TicketPurchase from '@/components/ticket-purchase'
-import PrizesTable, { Prize } from '@/components/prizes'
+import PrizesTable, { type Prize } from '@/components/prizes'
 import { useRouter } from 'next/router'
 
-export const metadata: Metadata = {
-  title: "Rob's Ribfest",
-  description:
-    'Rob\'s Ribfest is a community event that brings together food lovers and local charities. Enjoy delicious ribs while supporting a good cause.',
-}
+// export const metadata: Metadata = {
+//   title: "Rob's Ribfest",
+//   description:
+//     'Rob\'s Ribfest is a community event that brings together food lovers and local charities. Enjoy delicious ribs while supporting a good cause.',
+// }
+
 
 const raffle = {
   Guid: 'r50-001',
@@ -103,7 +105,7 @@ const rules = `
   </ol>
 `;
 
-function classNames(...classes: any) {
+function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
 }
 

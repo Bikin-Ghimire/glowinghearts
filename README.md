@@ -36,6 +36,7 @@ glowinghearts/
 ├── src/                   # All website contents
 │   ├── app/               # Next.js App Router pages
 │   ├── components/        # Reusable UI components
+│   ├── pages/             # React API Routes (Used for payment)
 │   ├── styles/            # Global styles (tailwind.css and others, if any)
 ├── public/                # Static assets
 ├── tailwind.config.js     # Tailwind CSS configuration
