@@ -4,8 +4,8 @@ import React from 'react'
 export interface Prize {
   order: number
   title: string
-  description: number
-  date: string
+  VC_Description: string
+  Dt_Draw: string
   winnerId: string
 }
 
@@ -64,9 +64,9 @@ export default function PrizesTable({ prizes }: PrizesTableProps) {
                     <dt className="sr-only">Title</dt>
                     <dd className="block font-semibold text-gray-900 truncate">{p.title}</dd>
                     <dt className="sr-only">Description</dt>
-                    <dd className="mt-1 text-gray-500 truncate">$ {p.description.toLocaleString()}</dd>
+                    <dd className="mt-1 text-gray-500 truncate">$ {p.VC_Description}</dd>
                     <dt className="sr-only">Date</dt>
-                    <dd className="mt-1 text-gray-400 text-xs truncate">{formatDate(p.date)}</dd>
+                    <dd className="mt-1 text-gray-400 text-xs truncate">{formatDate(p.Dt_Draw)}</dd>
                   </dl>
                   {/* Desktop title only */}
                   <div className="hidden lg:block">
@@ -74,10 +74,10 @@ export default function PrizesTable({ prizes }: PrizesTableProps) {
                   </div>
                 </td>
                 <td className="hidden lg:table-cell px-3 py-4 text-sm text-gray-500">
-                  $ {p.description.toLocaleString()}
+                  $ {p.VC_Description}
                 </td>
                 <td className="hidden lg:table-cell px-3 py-4 text-sm text-gray-500">
-                  {formatDate(p.date)}
+                  {formatDate(p.Dt_Draw)}
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500">
                   {p.winnerId || 'TBD'}

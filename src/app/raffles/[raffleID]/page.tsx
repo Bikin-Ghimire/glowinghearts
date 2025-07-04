@@ -1,4 +1,5 @@
 'use client';
+import { format } from 'date-fns'
 import { Fragment } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
@@ -13,6 +14,8 @@ const CountdownTimer = dynamic(() => import('@/components/countdown-timer'), { s
 import TicketPurchase from '@/components/ticket-purchase'
 import PrizesTable, { type Prize } from '@/components/prizes'
 import { useRouter } from 'next/router'
+import { useRaffleDetails } from '@/app/hooks/useRaffleDetails';
+import { DEFAULT_RAFFLE_ID } from '@/constants/raffleConstants';
 
 // export const metadata: Metadata = {
 //   title: "Rob's Ribfest",
@@ -110,12 +113,20 @@ function classNames(...classes: any[]) {
 }
 
 function Raffle() {
+  const { raffles, loading, error } = useRaffleDetails(DEFAULT_RAFFLE_ID);
+  console.log(raffles[0]?.obj_RaffleData);
+  const { Dec_MoneyRaised, Dt_SalesClose, VC_CharityDesc, obj_BuyIns, Dt_SalesOpen, Txt_GameDetails, Txt_GameRules, obj_Prizes } = raffles[0]?.obj_RaffleData || {};
+  console.log(raffles[0]?.obj_RaffleData?.obj_BuyIns);
+  if (loading) return <p>Loading raffles…</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!raffles.length) return <p>No raffles available.</p>;
+
   return (
     <div className="bg-white">
       <div className="mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="flex flex-col-reverse">
           <div className="mb-5">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">{raffle.name}</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">{VC_CharityDesc}</h1>
           </div>
         </div>
         <div className="lg:grid lg:grid-cols-7 lg:grid-rows-1 lg:gap-x-8 lg:gap-y-4 xl:gap-x-16">
@@ -133,7 +144,7 @@ function Raffle() {
             <div className="text-center p-6 bg-[{raffle.primary_color}] rounded-2xl border-2 border-gray-300 text-[#{raffle.font_color}] max-w-xs mx-auto">
               {/* Big raised amount */}
               <p className="text-5xl font-extrabold tracking-tight sm:text-6xl animate-pulse [animation-duration:1s] text-[#b060ff]">
-                $<AnimatedNumber end={raffle.amount_raised} decimals={0} />
+                $<AnimatedNumber end={Dec_MoneyRaised} decimals={0} />
               </p>
 
               {/* Smaller “Jackpot” label */}
@@ -156,14 +167,14 @@ function Raffle() {
 
                 {/* Smaller “Jackpot” label */}
                 <p className="mt-2 text-2xl font-bold sm:text-3xl">
-                  <CountdownTimer endDate={raffle.end_date} />
+                  <CountdownTimer endDate={Dt_SalesClose} />
                 </p>
               </div>
             </div>
 
             {/* Ticket Purchase */}
             <div className="mt-10 border-t border-gray-200 pt-10">
-              <TicketPurchase tickets={raffle.tickets} raffleID={raffle.Guid} />
+              <TicketPurchase tickets={obj_BuyIns} raffleID={obj_BuyIns?.Guid_BuyIn} />
             </div>
           </div>
 
@@ -176,11 +187,11 @@ function Raffle() {
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Start Date</dt>
-                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{raffle.start_date}</dd>
+                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{format(new Date(Dt_SalesOpen), 'dd MMM yyyy')}</dd>
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Draw Date</dt>
-                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{raffle.end_date}</dd>
+                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{format(new Date(Dt_SalesClose), 'dd MMM yyyy')}</dd>
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Draw Location</dt>
@@ -247,7 +258,7 @@ function Raffle() {
                   <h3 className="sr-only">Details</h3>
 
                   <div
-                    dangerouslySetInnerHTML={{ __html: details.content }}
+                    dangerouslySetInnerHTML={{ __html: Txt_GameDetails }}
                     className="text-sm text-gray-500 [&_h4]:mt-5 [&_h4]:font-medium [&_h4]:text-gray-900 [&_li]:pl-2 [&_li::marker]:text-gray-300 [&_p]:my-2 [&_p]:text-sm/6 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-sm/6 [&>:first-child]:mt-0"
                   />
                 </TabPanel>
@@ -256,7 +267,7 @@ function Raffle() {
                   <h3 className="sr-only">Rules</h3>
 
                   <div
-                    dangerouslySetInnerHTML={{ __html: rules }}
+                    dangerouslySetInnerHTML={{ __html: Txt_GameRules }}
                     className="text-sm text-gray-500 [&_h4]:mt-5 [&_h4]:font-medium [&_h4]:text-gray-900 [&_li]:pl-2 [&_li::marker]:text-gray-300 [&_p]:my-2 [&_p]:text-sm/6 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-sm/6 [&>:first-child]:mt-0"
                   />
                 </TabPanel>
@@ -264,7 +275,7 @@ function Raffle() {
                 <TabPanel className="text-sm text-gray-500">
                   <h3 className="sr-only">Prizes</h3>
 
-                  <PrizesTable prizes={raffle.prizes} />
+                  <PrizesTable prizes={obj_Prizes} />
                 </TabPanel>
               </TabPanels>
             </TabGroup>

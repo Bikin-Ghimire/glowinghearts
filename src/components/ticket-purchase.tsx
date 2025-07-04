@@ -6,8 +6,8 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 export interface TicketTier {
   id: number | string
-  number_of_tickets: string  // e.g. "50"
-  price: number              // e.g. 50
+  Int_NumbTicket: string  // e.g. "50"
+  Dec_Price: number              // e.g. 50
   description?: string
 }
 
@@ -30,7 +30,7 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
 
   // calculate total cost
   const total = tickets.reduce(
-    (sum, t) => sum + (counts[t.id] || 0) * t.price,
+    (sum, t) => sum + (counts[t.id] || 0) * t.Dec_Price,
     0
   )
 
@@ -39,8 +39,8 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
     const selectedTickets = tickets
       .filter(t => (counts[t.id] || 0) > 0)
       .map(t => ({
-        number_of_tickets: t.number_of_tickets,
-        price: t.price,
+        Int_NumbTicket: t.Int_NumbTicket,
+        Dec_Price: t.Dec_Price,
         quantity: counts[t.id] || 0,
       }))
 
@@ -75,7 +75,7 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
       {tickets.map((t) => (
         <div key={t.id} className="flex items-center justify-between">
           <span className="text-gray-800">
-            {t.number_of_tickets} tickets for ${t.price}
+            {t.Int_NumbTicket} tickets for ${t.Dec_Price}
           </span>
           <div className="flex items-center space-x-2">
             <button
