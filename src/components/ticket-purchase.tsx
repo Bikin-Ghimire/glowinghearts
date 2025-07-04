@@ -5,7 +5,7 @@ import { loadStripe } from '@stripe/stripe-js'
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export interface TicketTier {
-  id: number | string
+  Guid_BuyIn: number | string
   Int_NumbTicket: string  // e.g. "50"
   Dec_Price: number              // e.g. 50
   description?: string
@@ -18,30 +18,30 @@ interface TicketPurchaseProps {
 }
 
 export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProps) {
-  // initialize counts keyed by id
+  // initialize counts keyed by Guid_BuyIn
   const [counts, setCounts] = useState<Record<string, number>>(
-    tickets.reduce((acc, t) => ({ ...acc, [t.id]: 0 }), {})
+    tickets.reduce((acc, t) => ({ ...acc, [t.Guid_BuyIn]: 0 }), {})
   )
 
-  const increment = (id: string | number) =>
-    setCounts(c => ({ ...c, [id]: c[id] + 1 }))
-  const decrement = (id: string | number) =>
-    setCounts(c => ({ ...c, [id]: Math.max((c[id] || 0) - 1, 0) }))
+  const increment = (Guid_BuyIn: string | number) =>
+    setCounts(c => ({ ...c, [Guid_BuyIn]: c[Guid_BuyIn] + 1 }))
+  const decrement = (Guid_BuyIn: string | number) =>
+    setCounts(c => ({ ...c, [Guid_BuyIn]: Math.max((c[Guid_BuyIn] || 0) - 1, 0) }))
 
   // calculate total cost
   const total = tickets.reduce(
-    (sum, t) => sum + (counts[t.id] || 0) * t.Dec_Price,
+    (sum, t) => sum + (counts[t.Guid_BuyIn] || 0) * t.Dec_Price,
     0
   )
 
   const handleCheckout = async () => {
     // build an array of selected tickets with quantity
     const selectedTickets = tickets
-      .filter(t => (counts[t.id] || 0) > 0)
+      .filter(t => (counts[t.Guid_BuyIn] || 0) > 0)
       .map(t => ({
         Int_NumbTicket: t.Int_NumbTicket,
         Dec_Price: t.Dec_Price,
-        quantity: counts[t.id] || 0,
+        quantity: counts[t.Guid_BuyIn] || 0,
       }))
 
       // build payload with raffle Guid
@@ -60,6 +60,8 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
     })
     const { sessionId } = await res.json()
 
+    console.log('🔔 [checkout] Session ID:', sessionId)
+
     // redirect to Stripe Checkout
     const stripe = await stripePromise
     const { error } = await stripe!.redirectToCheckout({ sessionId })
@@ -73,20 +75,20 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
 
       {/* Ticket bundle rows */}
       {tickets.map((t) => (
-        <div key={t.id} className="flex items-center justify-between">
+        <div key={t.Guid_BuyIn} className="flex items-center justify-between">
           <span className="text-gray-800">
             {t.Int_NumbTicket} tickets for ${t.Dec_Price}
           </span>
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => decrement(t.id)}
+              onClick={() => decrement(t.Guid_BuyIn)}
               className="px-2 py-1 bg-gray-200 rounded cursor-pointer hover:bg-gray-300"
             >
               −
             </button>
-            <span className="w-6 text-center">{counts[t.id] || 0}</span>
+            <span className="w-6 text-center">{counts[t.Guid_BuyIn] || 0}</span>
             <button
-              onClick={() => increment(t.id)}
+              onClick={() => increment(t.Guid_BuyIn)}
               className="px-2 py-1 bg-gray-200 rounded cursor-pointer hover:bg-gray-300"
             >
               +
