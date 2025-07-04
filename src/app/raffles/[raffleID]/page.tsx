@@ -174,7 +174,7 @@ function Raffle() {
 
             {/* Ticket Purchase */}
             <div className="mt-10 border-t border-gray-200 pt-10">
-              <TicketPurchase tickets={obj_BuyIns} raffleID={obj_BuyIns?.Guid_BuyIn} />
+              <TicketPurchase tickets={obj_BuyIns} raffleID={DEFAULT_RAFFLE_ID} />
             </div>
           </div>
 

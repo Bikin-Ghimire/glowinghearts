@@ -1,16 +1,16 @@
+'use server'
 // pages/api/checkout-sessions.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2022-11-15',
+  apiVersion: '2025-06-30.basil',
 })
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('🔔 [checkout] Method:', req.method, 'Body:', req.body)
 
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST'])
@@ -20,7 +20,7 @@ export default async function handler(
   try {
     // Expect tickets with quantity
     const { tickets } = req.body as {
-      tickets: { number_of_tickets: string; price: number; quantity: number }[]
+      tickets: { Int_NumbTicket: string; Dec_Price: number; quantity: number }[]
     }
 
     if (!tickets?.length) {
@@ -31,8 +31,8 @@ export default async function handler(
     const line_items = tickets.map((t) => ({
       price_data: {
         currency: 'cad',
-        product_data: { name: `${t.number_of_tickets}-ticket pack` },
-        unit_amount: t.price * 100,
+        product_data: { name: `${t.Int_NumbTicket}-ticket pack` },
+        unit_amount: t.Dec_Price * 100,
       },
       quantity: t.quantity,
     }))
