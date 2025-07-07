@@ -31,7 +31,7 @@ function Hero() {
         <Navbar
           banner={
             <Link
-              href="#"
+              href="/how-it-works"
               className="flex items-center gap-1 rounded-full bg-fuchsia-950/35 px-3 py-0.5 text-sm/6 font-medium text-white data-hover:bg-fuchsia-950/30"
             >
               How Glowing Hearts helps nonprofits meet their fundraising goals
@@ -47,8 +47,8 @@ function Hero() {
             Power your fundraising with easy, secure 50/50 raffles. We handle the details—so your organization can focus on making a difference in the community.
           </p>
           <div className="mt-12 flex flex-col gap-x-6 gap-y-4 sm:flex-row">
-            <Button href="#">Get started</Button>
-            <Button variant="secondary" href="#">
+            <Button href="/contact-us">Get started</Button>
+            <Button variant="secondary" href="/how-it-works">
               How it works
             </Button>
           </div>
@@ -219,7 +219,7 @@ const features = [
 
 function Features() {
   return (
-    <div className="bg-white py-24 sm:py-32">
+    <div className="bg-white py-24 sm:py-32" id="Features">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
           <h2 className="text-base/7 font-semibold text-indigo-600">Hands free fundraising</h2>
