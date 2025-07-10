@@ -15,6 +15,7 @@ import TicketPurchase from '@/components/ticket-purchase'
 import PrizesTable, { type Prize } from '@/components/prizes'
 import { useRouter } from 'next/router'
 import { useRaffleDetails } from '@/app/hooks/useRaffleDetails';
+import useRaffleREST  from '@/app/hooks/useRaffleREST'
 import { DEFAULT_RAFFLE_ID } from '@/constants/raffleConstants';
 
 // export const metadata: Metadata = {
@@ -114,12 +115,13 @@ function classNames(...classes: any[]) {
 
 function Raffle() {
   const { raffles, loading, error } = useRaffleDetails(DEFAULT_RAFFLE_ID);
-  console.log(raffles[0]?.obj_RaffleData);
+  const { restData, isLoading, isError } = useRaffleREST(DEFAULT_RAFFLE_ID)
+  // console.log(restData);
   const { Dec_MoneyRaised, Dt_SalesClose, VC_CharityDesc, obj_BuyIns, Dt_SalesOpen, Txt_GameDetails, Txt_GameRules, obj_Prizes } = raffles[0]?.obj_RaffleData || {};
-  console.log(raffles[0]?.obj_RaffleData?.obj_BuyIns);
-  if (loading) return <p>Loading raffles…</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!raffles.length) return <p>No raffles available.</p>;
+
+  if (loading || isLoading) return <p>Loading raffles…</p>;
+  if (error || isError) return <p>Error: {error} {isError}</p>;
+  if (!raffles.length && !restData.length) return <p>No raffles available.</p>;
 
   return (
     <div className="bg-white">

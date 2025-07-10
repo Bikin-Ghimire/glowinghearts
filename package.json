@@ -29,7 +29,8 @@
     "react-use-measure": "^2.1.1",
     "sanity": "^2.36.6",
     "socket.io-client": "^4.8.1",
-    "stripe": "^18.3.0"
+    "stripe": "^18.3.0",
+    "swr": "^2.3.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.7",
