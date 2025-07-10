@@ -1,10 +1,116 @@
+'use client'
+
 import { Container } from '@/components/container'
 import { Footer } from '@/components/footer'
 import { GradientBackground } from '@/components/gradient'
 import { Navbar } from '@/components/navbar'
 import { BuildingOffice2Icon, EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline'
+import { useState, type FormEvent } from 'react'
+import { CheckCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { Transition } from '@headlessui/react'
+
+function NotificationToast({
+  status,
+  onClose,
+}: {
+  status: 'idle' | 'sending' | 'sent' | 'error'
+  onClose: () => void
+}) {
+  // nothing shown for idle or sending
+  const isVisible = status === 'sent' || status === 'error'
+  if (!isVisible) return null
+
+  // pick icon, title & message based on status
+  const config = {
+    sent: {
+      Icon: CheckCircleIcon,
+      iconColor: 'text-green-400',
+      title: 'Successfully sent!',
+      message: 'Thanks for reaching out—we’ll be in touch shortly.',
+    },
+    error: {
+      Icon: XCircleIcon,
+      iconColor: 'text-red-400',
+      title: 'Oops, something went wrong',
+      message: 'There was an error sending your message. Please try again.',
+    },
+  }[status]
+
+  return (
+    <Transition
+      show={isVisible}
+      enter="transition ease-out duration-300"
+      enterFrom="transform opacity-0 translate-y-2"
+      enterTo="transform opacity-100 translate-y-0"
+      leave="transition ease-in duration-100"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+    >
+      <div className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
+        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+          <div className="pointer-events-auto w-full max-w-sm rounded-lg bg-white shadow-lg ring-1 ring-black/5">
+            <div className="p-4 flex items-start">
+              <config.Icon
+                className={`size-6 ${config.iconColor}`}
+                aria-hidden="true"
+              />
+              <div className="ml-3 w-0 flex-1 pt-0.5">
+                <p className="text-sm font-medium text-gray-900">
+                  {config.title}
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  {config.message}
+                </p>
+              </div>
+              <button
+                onClick={onClose}
+                className="ml-4 inline-flex text-gray-400 hover:text-gray-500 focus:outline-none"
+              >
+                <span className="sr-only">Close</span>
+                <XMarkIcon aria-hidden="true" className="size-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  )
+}
 
 function Contact() {
+  const [form, setForm] = useState({ firstName: '',
+    lastName: '', company: '', email: '', phoneNumber: '', message: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setStatus('sending')
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to send message')
+      }
+
+      setStatus('sent')
+      setForm({ firstName: '', lastName: '', company: '', email: '', phoneNumber: '', message: '' })
+    } catch (error) {
+      console.error('Error sending message:', error)
+      setStatus('idle')
+    }
+  }
+
+  const [show, setShow] = useState(true)
+
   return (
     <div className="relative isolate bg-white">
       <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
@@ -80,7 +186,10 @@ function Contact() {
             </dl>
           </div>
         </div>
-        <form action="#" method="POST" className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48">
+        <form onSubmit={handleSubmit} action="#" method="POST" className="px-6 pt-20 pb-24 sm:pb-32 lg:px-8 lg:py-48">
+          <>
+            <NotificationToast status={status} onClose={() => setStatus('idle')} />
+          </>
           <div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               <div>
@@ -90,7 +199,10 @@ function Contact() {
                 <div className="mt-2.5">
                   <input
                     id="first-name"
-                    name="first-name"
+                    name="firstName"
+                    value={form.firstName}
+                    onChange={handleChange}
+                    required
                     type="text"
                     autoComplete="given-name"
                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -104,7 +216,10 @@ function Contact() {
                 <div className="mt-2.5">
                   <input
                     id="last-name"
-                    name="last-name"
+                    name="lastName"
+                    value={form.lastName}
+                    onChange={handleChange}
+                    required
                     type="text"
                     autoComplete="family-name"
                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -119,6 +234,9 @@ function Contact() {
                   <input
                     id="company"
                     name="company"
+                    value={form.company}
+                    onChange={handleChange}
+                    required
                     type="text"
                     autoComplete="organization"
                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -133,6 +251,9 @@ function Contact() {
                   <input
                     id="email"
                     name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
                     type="email"
                     autoComplete="email"
                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -146,7 +267,10 @@ function Contact() {
                 <div className="mt-2.5">
                   <input
                     id="phone-number"
-                    name="phone-number"
+                    name="phoneNumber"
+                    value={form.phoneNumber}
+                    onChange={handleChange}
+                    required
                     type="tel"
                     autoComplete="tel"
                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -161,19 +285,21 @@ function Contact() {
                   <textarea
                     id="message"
                     name="message"
+                    value={form.message}
+                    onChange={handleChange}
+                    required
                     rows={4}
                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                    defaultValue={''}
                   />
                 </div>
               </div>
             </div>
             <div className="mt-8 flex justify-end">
               <button
-                type="submit"
+                type="submit" disabled={status === 'sending'}
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Send message
+                {status === 'sending' ? 'Sending...' : 'Send Message'}
               </button>
             </div>
           </div>
