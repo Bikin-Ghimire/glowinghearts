@@ -115,9 +115,12 @@ function classNames(...classes: any[]) {
 
 function Raffle() {
   const { raffles, loading, error } = useRaffleDetails(DEFAULT_RAFFLE_ID);
-  const { restData, isLoading, isError } = useRaffleREST(DEFAULT_RAFFLE_ID)
+  const { restData, isLoading, isError } = useRaffleREST(DEFAULT_RAFFLE_ID);
   // console.log(restData);
+  console.log(restData[0]?.obj_Raffles);
   const { Dec_MoneyRaised, Dt_SalesClose, VC_CharityDesc, obj_BuyIns, Dt_SalesOpen, Txt_GameDetails, Txt_GameRules, obj_Prizes } = raffles[0]?.obj_RaffleData || {};
+  const { VC_LicenseNumb, VC_RaffleLocation, VC_RaffleName, Txt_GameDetails: restGameDetails, Txt_GameRules: restGameRules } = restData[0]?.obj_Raffles[0] || {};
+  console.log(VC_LicenseNumb);
 
   if (loading || isLoading) return <p>Loading raffles…</p>;
   if (error || isError) return <p>Error: {error} {isError}</p>;
@@ -128,7 +131,7 @@ function Raffle() {
       <div className="mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="flex flex-col-reverse">
           <div className="mb-5">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">{VC_CharityDesc}</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">{VC_RaffleName}</h1>
           </div>
         </div>
         <div className="lg:grid lg:grid-cols-7 lg:grid-rows-1 lg:gap-x-8 lg:gap-y-4 xl:gap-x-16">
@@ -185,7 +188,7 @@ function Raffle() {
             <dl className="mx-auto grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Licence #</dt>
-                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">736570</dd>
+                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{VC_LicenseNumb}</dd>
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Start Date</dt>
@@ -197,7 +200,7 @@ function Raffle() {
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Draw Location</dt>
-                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{raffle.draw_location}</dd>
+                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{VC_RaffleLocation}</dd>
               </div>
             </dl>
 
