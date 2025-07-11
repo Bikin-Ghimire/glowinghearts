@@ -119,7 +119,7 @@ function Raffle() {
   // console.log(restData);
   console.log(restData[0]?.obj_Raffles);
   const { Dec_MoneyRaised, Dt_SalesClose, VC_CharityDesc, obj_BuyIns, Dt_SalesOpen, Txt_GameDetails, Txt_GameRules, obj_Prizes } = raffles[0]?.obj_RaffleData || {};
-  const { VC_LicenseNumb, VC_RaffleLocation, VC_RaffleName, Txt_GameDetails: restGameDetails, Txt_GameRules: restGameRules } = restData[0]?.obj_Raffles[0] || {};
+  const { VC_LicenseNumb, VC_RaffleLocation, VC_RaffleName, Txt_GameDetails: restGameDetails, Txt_GameRules: restGameRules, Dt_SalesOpen: restDt_SalesOpen,  Dt_SalesClose: restDt_SalesClose} = restData[0]?.obj_Raffles[0] || {};
   console.log(VC_LicenseNumb);
 
   if (loading || isLoading) return <p>Loading raffles…</p>;
@@ -192,11 +192,11 @@ function Raffle() {
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Start Date</dt>
-                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{format(new Date(Dt_SalesOpen), 'dd MMM yyyy')}</dd>
+                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{restDt_SalesOpen? format(new Date(restDt_SalesOpen), 'dd MMM yyyy') : 'No Start Date Available'}</dd>
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Draw Date</dt>
-                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{format(new Date(Dt_SalesClose), 'dd MMM yyyy')}</dd>
+                <dd className="w-full flex-none text-xl font-medium tracking-tight text-gray-900">{restDt_SalesClose? format(new Date(restDt_SalesClose), 'dd MMM yyyy') : 'No End Date Available'}</dd>
               </div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 bg-gray-900/5 px-4 py-2 sm:px-6 xl:px-8 rounded-xl">
                 <dt className="text-sm font-medium text-gray-500">Draw Location</dt>
@@ -263,7 +263,7 @@ function Raffle() {
                   <h3 className="sr-only">Details</h3>
 
                   <div
-                    dangerouslySetInnerHTML={{ __html: Txt_GameDetails }}
+                    dangerouslySetInnerHTML={{ __html: restGameDetails }}
                     className="text-sm text-gray-500 [&_h4]:mt-5 [&_h4]:font-medium [&_h4]:text-gray-900 [&_li]:pl-2 [&_li::marker]:text-gray-300 [&_p]:my-2 [&_p]:text-sm/6 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-sm/6 [&>:first-child]:mt-0"
                   />
                 </TabPanel>
@@ -272,7 +272,7 @@ function Raffle() {
                   <h3 className="sr-only">Rules</h3>
 
                   <div
-                    dangerouslySetInnerHTML={{ __html: Txt_GameRules }}
+                    dangerouslySetInnerHTML={{ __html: restGameRules }}
                     className="text-sm text-gray-500 [&_h4]:mt-5 [&_h4]:font-medium [&_h4]:text-gray-900 [&_li]:pl-2 [&_li::marker]:text-gray-300 [&_p]:my-2 [&_p]:text-sm/6 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-sm/6 [&>:first-child]:mt-0"
                   />
                 </TabPanel>
