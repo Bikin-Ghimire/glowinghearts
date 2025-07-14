@@ -240,14 +240,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['line_items', 'customer_details'],
   })
-
+  
   // Pull in raffle dates however you store them (env, database, etc.)
   const raffle = {
     salesEndDate: process.env.RAFFLE_SALES_END || '2025-07-31',
     drawDate:     process.env.RAFFLE_DRAW_DATE   || '2025-08-15',
     rafflePagePath: '/raffle/robs-ribfest',
   }
-
+// debugger
   return {
     props: {
       session,

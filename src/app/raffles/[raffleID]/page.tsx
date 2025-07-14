@@ -16,7 +16,8 @@ import PrizesTable, { type Prize } from '@/components/prizes'
 import { useRouter } from 'next/router'
 import { useRaffleDetails } from '@/app/hooks/useRaffleDetails';
 import useRaffleREST  from '@/app/hooks/useRaffleREST'
-import { DEFAULT_RAFFLE_ID } from '@/constants/raffleConstants';
+import { DEFAULT_CHARITY_ID, DEFAULT_RAFFLE_ID, RAFFLE_CORRESPONDING_TO_CHARITY } from '@/constants/raffleConstants';
+import useBannerREST from '@/app/hooks/useBannerRest';
 
 // export const metadata: Metadata = {
 //   title: "Rob's Ribfest",
@@ -114,18 +115,22 @@ function classNames(...classes: any[]) {
 }
 
 function Raffle() {
-  const { raffles, loading, error } = useRaffleDetails(DEFAULT_RAFFLE_ID);
-  const { restData, isLoading, isError } = useRaffleREST(DEFAULT_RAFFLE_ID);
-  // console.log(restData);
-  console.log(restData[0]?.obj_Raffles);
-  const { Dec_MoneyRaised, Dt_SalesClose, VC_CharityDesc, obj_BuyIns, Dt_SalesOpen, Txt_GameDetails, Txt_GameRules, obj_Prizes } = raffles[0]?.obj_RaffleData || {};
-  const { VC_LicenseNumb, VC_RaffleLocation, VC_RaffleName, Txt_GameDetails: restGameDetails, Txt_GameRules: restGameRules, Dt_SalesOpen: restDt_SalesOpen,  Dt_SalesClose: restDt_SalesClose} = restData[0]?.obj_Raffles[0] || {};
-  console.log(VC_LicenseNumb);
+  const { raffles, loading, error } = useRaffleDetails(RAFFLE_CORRESPONDING_TO_CHARITY);
+  const { restData, isLoading, isError } = useRaffleREST(RAFFLE_CORRESPONDING_TO_CHARITY);
+  const { charityData: raffleImagData, isLoading: loadingBanner, isBannerError } = useBannerREST(DEFAULT_CHARITY_ID);
 
-  if (loading || isLoading) return <p>Loading raffles…</p>;
+  // console.log(raffleImagData);
+  // console.log(restData);
+  // debugger
+  console.log(restData[0]?.obj_Raffles);
+
+  if (loading || isLoading || loadingBanner) return <p>Loading raffles…</p>;
   if (error || isError) return <p>Error: {error} {isError}</p>;
   if (!raffles.length && !restData.length) return <p>No raffles available.</p>;
-
+  const { Dec_MoneyRaised, Dt_SalesClose, VC_CharityDesc, obj_BuyIns, Dt_SalesOpen, Txt_GameDetails, Txt_GameRules, obj_Prizes } = raffles[0]?.obj_RaffleData || {};
+  const { VC_LicenseNumb, VC_RaffleLocation, VC_RaffleName, Txt_GameDetails: restGameDetails, Txt_GameRules: restGameRules, Dt_SalesOpen: restDt_SalesOpen,  Dt_SalesClose: restDt_SalesClose} = restData[0]?.obj_RaffleData[0] || {};
+  const { VC_BannerLocation } = raffleImagData[0]?.obj_Banner[0];
+  console.log(VC_BannerLocation)
   return (
     <div className="bg-white">
       <div className="mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -139,7 +144,7 @@ function Raffle() {
           <div className="lg:col-span-5 lg:row-end-1">
             <img
               alt={raffle.imageAlt}
-              src={raffle.imageSrc}
+              src={VC_BannerLocation}
               className="aspect-4/2 w-full rounded-lg bg-gray-100 object-cover"
             />
           </div>
