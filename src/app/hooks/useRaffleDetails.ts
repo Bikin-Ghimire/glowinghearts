@@ -1,45 +1,59 @@
-// src/hooks/useRaffleDetails.ts
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { initiateSocket, getSocket, disconnectSocket } from '@/app/lib/socket';
 import {
   RAFFLE_EVENT_REQUEST,
   RAFFLE_EVENT_RESPONSE,
 } from '@/constants/raffleConstants';
 
-export function useRaffleDetails(raffleId: string) {
-  const [raffles, setRaffles] = useState<Record<string, any>[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+function fetchRaffleDetailsViaSocket(raffleId: string): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    if (!raffleId) return reject('Missing raffle ID');
 
-  useEffect(() => {
-    if (!raffleId) return;
+    try {
+      initiateSocket();
+      const socket = getSocket();
+      socket.connect();
 
-    initiateSocket();
-    const socket = getSocket();
-    socket.connect();
+      // Request raffle details
+      socket.emit(RAFFLE_EVENT_REQUEST, { Guid_RaffleId: raffleId });
 
-    socket.emit(RAFFLE_EVENT_REQUEST, {
-      Guid_RaffleId: raffleId,
-    });
+      // Listen for response
+      socket.once(RAFFLE_EVENT_RESPONSE, (data: any) => {
+        socket.off(RAFFLE_EVENT_RESPONSE);
+        disconnectSocket();
+        resolve(Array.isArray(data) ? data : [data]);
+      });
 
-     
-    socket.on(RAFFLE_EVENT_RESPONSE, (data: any) => {
-      setRaffles(Array.isArray(data) ? data : [data]);
-      setLoading(false);
-    });
+      // Listen for errors
+      socket.once('connect_error', (err) => {
+        disconnectSocket();
+        console.error('Socket connection error:', err);
+        reject('Socket connection failed');
+      });
 
-     
-    socket.on('connect_error', (err) => {
-      console.error('Socket connect error:', err);
-      setError('Socket connection failed');
-      setLoading(false);
-    });
-     
-    return () => {
-      socket.off(RAFFLE_EVENT_RESPONSE);
+      // Optional: timeout fallback
+      setTimeout(() => {
+        disconnectSocket();
+        reject('Socket response timeout');
+      }, 5000);
+
+    } catch (err) {
       disconnectSocket();
-    };
-  }, [raffleId]);
+      reject('Unexpected error occurred');
+    }
+  });
+}
 
-  return { raffles, loading, error };
+export function useRaffleDetails(raffleId: string) {
+  const { data, error, isLoading } = useSWR(
+    raffleId ? ['raffle-details', raffleId] : null,
+    () => fetchRaffleDetailsViaSocket(raffleId),
+    { revalidateOnFocus: false }
+  );
+
+  return {
+    raffles: data || [],
+    loading: isLoading,
+    error,
+  };
 }

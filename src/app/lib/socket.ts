@@ -1,11 +1,12 @@
-// /lib/socket.ts
+'use client';
+import { SERVICE_URL } from '@/constants/raffleConstants';
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
 
 export const initiateSocket = () => {
   if (!socket) {
-    socket = io('https://5050-test.mikematich.ca', {
+    socket = io(SERVICE_URL, {
       transports: ['websocket'],
       secure: true,
       withCredentials: false,
