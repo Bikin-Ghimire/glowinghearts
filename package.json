@@ -6,14 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "typegen": "sanity schema extract --path=src/sanity/extract.json && sanity typegen generate && rm ./src/sanity/extract.json"
+    "lint": "next lint"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.1",
     "@heroicons/react": "^2.1.4",
     "@react-navigation/stack": "^7.0.0-rc.29",
-    "@sanity/image-url": "^1.0.2",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.4.0",
     "clsx": "^2.1.1",
@@ -27,7 +25,6 @@
     "react-dom": "^18",
     "react-input-mask": "^2.0.4",
     "react-use-measure": "^2.1.1",
-    "sanity": "^2.36.6",
     "socket.io-client": "^4.8.1",
     "stripe": "^18.3.0",
     "swr": "^2.3.4"
