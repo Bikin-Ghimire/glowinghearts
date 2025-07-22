@@ -24,14 +24,14 @@ interface PageProps {
 export default function RafflePage({ params }: PageProps) {
   const raffleId = params.raffleID;
 
-  const { raffles, loading, error } = useRaffleDetails(raffleId);
+  // const { raffles, loading, error } = useRaffleDetails(raffleId);
   const { restData, isLoading, isError } = useRaffleREST(raffleId);
   const { charityData: bannerData, isLoading: loadingBanner } = useBannerREST(raffleId);
 
-  if (loading || isLoading || loadingBanner) return <p>Loading...</p>;
-  if (error || isError) return <p>Error loading raffle data.</p>;
+  if (isLoading || loadingBanner) return <p>Loading...</p>;
+  if (isError) return <p>Error loading raffle data.</p>;
 
-  const raffleData = raffles?.[0]?.obj_RaffleData;
+  const raffleData = restData?.[0]?.obj_RaffleData;
   if (!raffleData) return <p>Raffle not found.</p>;
 
   const {

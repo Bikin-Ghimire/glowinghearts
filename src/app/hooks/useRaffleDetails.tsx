@@ -50,7 +50,7 @@ export function useRaffleDetails(raffleId: string) {
     () => fetchRaffleDetailsViaSocket(raffleId),
     { revalidateOnFocus: false }
   );
-
+  
   return {
     raffles: data || [],
     loading: isLoading,

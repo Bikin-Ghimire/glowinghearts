@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     switch (event.type) {
       case 'checkout.session.completed':
         // Handle successful payment
+        
         break;
       case 'invoice.payment_succeeded':
         // Handle successful subscription payment
