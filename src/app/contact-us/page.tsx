@@ -26,7 +26,7 @@ function NotificationToast({
       Icon: CheckCircleIcon,
       iconColor: 'text-green-400',
       title: 'Successfully sent!',
-      message: 'Thanks for reaching out—we’ll be in touch shortly.',
+      message: 'Thanks for reaching out. We will be in touch shortly.',
     },
     error: {
       Icon: XCircleIcon,
@@ -147,7 +147,7 @@ function Contact() {
               Are you ready to take the next step? Whether you have a question, want to collaborate, or just want to say hello, we’re here for you. Fill out the form, and we’ll get back to you as soon as possible.
             </p>
             <p className='mt-6 text-lg/8'>
-              If you have a technical issue or need support, please <strong>include your issue in the message section</strong> and we'll get back to you with assistance.
+              If you have a technical issue or need support, please <strong>include your issue in the message section</strong> and we will get back to you with assistance.
             </p>
             <dl className="mt-10 space-y-4 text-base/7 text-gray-600">
               <div className="flex gap-x-4">
