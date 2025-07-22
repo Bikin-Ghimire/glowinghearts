@@ -223,13 +223,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     Dt_Purchased: createdISO.replace('T', ' ').slice(0, 19),
     Dec_PurchaseAmount: amount / 100,
     VC_PlayerEmail: customer?.email ?? '',
-    VC_PlayerFirst: customer?.name?.split(' ')[0] ?? '',
-    VC_PlayerLast: customer?.name?.split(' ').slice(1).join(' ') ?? '',
+    VC_PlayerFullName: customer?.name,
     VC_PlayerAddr1: customer?.address?.line1 ?? '',
     VC_PlayerAddr2: customer?.address?.line2 ?? '',
     VC_PlayerCity: customer?.address?.city ?? '',
     VC_PlayerProvince: customer?.address?.state ?? '',
     VC_PlayerPostalCode: customer?.address?.postal_code ?? '',
+    VC_PlayerPhone: customer?.phone,
     obj_BuyIns: obj_BuyIns
   }
 
