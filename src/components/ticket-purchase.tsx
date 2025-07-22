@@ -33,7 +33,7 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
     (sum, t) => sum + (counts[t.Guid_BuyIn] || 0) * t.Dec_Price,
     0
   )
-
+  
   const handleCheckout = async () => {
     // build an array of selected tickets with quantity
     const selectedTickets = tickets
@@ -42,14 +42,16 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
         Int_NumbTicket: t.Int_NumbTicket,
         Dec_Price: t.Dec_Price,
         quantity: counts[t.Guid_BuyIn] || 0,
+        Guid_BuyIn: t.Guid_BuyIn,
+        Total_Price: t.Dec_Price * counts[t.Guid_BuyIn]
       }))
 
       // build payload with raffle Guid
       const payload = {
         tickets: selectedTickets,
-        id: raffleID,
+        raffleId: raffleID,
+        total_price: total
       }
-
     if (selectedTickets.length === 0) return
 
     // call your backend to create a Stripe Checkout session
@@ -58,11 +60,12 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
+
     const { sessionId } = await res.json()
 
-    console.log('🔔 [checkout] Session ID:', sessionId)
+    console.log('[checkout] Session ID:', sessionId)
 
-    // redirect to Stripe Checkout
+      // redirect to Stripe Checkout
     const stripe = await stripePromise
     const { error } = await stripe!.redirectToCheckout({ sessionId })
     if (error) console.error(error)

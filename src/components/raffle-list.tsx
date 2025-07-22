@@ -11,29 +11,34 @@ interface RaffleListProps {
 /**
  * A responsive grid of raffle cards.
  */
-export const RaffleList: React.FC<RaffleListProps> = ({ raffles }) => {
+export const RaffleList = ({ raffles }) => {
+    const rafflesData = Array.isArray(raffles) ? raffles : [raffles]
+  // console.log(rafflesData);
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {raffles.map((raffle) => (
+      {rafflesData.map((raffle) => (
         <div
-          key={raffle.obj_RaffleData.Guid_DrawId}
+          key={raffle?.Guid_DrawId}
           className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
         >
-          <img
+          {/* <img
             src={raffle.obj_RaffleData.bannerSrc}
             alt={raffle.obj_RaffleData.bannerAlt}
             className="aspect-4/2 w-full bg-gray-200 object-cover group-hover:opacity-75 sm:aspect-4/2"
-          />
+          /> */}
           <div className="flex flex-1 flex-col space-y-2 p-4">
             <h3 className="text-2xl font-medium text-gray-900">
-              <Link href={`/raffles/${slugify(raffle.obj_RaffleData.VC_CharityDesc)}`}>
+              {/* <Link href={`/raffles/${raffle?.Guid_DrawId? slugify(raffle?.Guid_DrawId) : ''}`}>
+               */}
+              <Link href={`/raffles/${raffle?.Guid_DrawId}`}>
                 <span aria-hidden="true" className="absolute inset-0" />
-                {raffle.obj_RaffleData.VC_CharityDesc}
+                {raffle?.VC_RaffleName}
               </Link>
             </h3>
-            <p className="text-3xl font-bold">${Number(raffle.obj_RaffleData.Dec_MoneyRaised).toLocaleString('en-CA')} raised</p>
+            <p className="text-3xl font-bold">${Number(raffle?.Dec_MoneyRaised)} raised</p>
             <div className="flex flex-1 flex-col justify-end">
-              <p className="text-md text-gray-500 italic">Sales End Date: {format(new Date(raffle.obj_RaffleData.Dt_SalesClose), 'dd MMM')}</p>
+              <p className="text-md text-gray-500 italic">Sales End Date: {raffle?.Dt_SalesClose? format(new Date(raffle?.Dt_SalesClose), 'dd MMM'): ''}</p>
             </div>
           </div>
         </div>
