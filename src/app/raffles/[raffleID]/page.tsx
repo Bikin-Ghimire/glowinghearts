@@ -26,7 +26,7 @@ export default function RafflePage({ params }: PageProps) {
 
   // const { raffles, loading, error } = useRaffleDetails(raffleId);
   const { restData, isLoading, isError } = useRaffleREST(raffleId);
-  const { charityData: bannerData, isLoading: loadingBanner } = useBannerREST(restData[0]?.obj_RaffleData?.Guid_CharityId);
+  const { charityData: bannerData, isLoading: loadingBanner } = useBannerREST(raffleId);
 
   if (isLoading || loadingBanner) return <p>Loading...</p>;
   if (isError) return <p>Error loading raffle data.</p>;
@@ -36,7 +36,6 @@ export default function RafflePage({ params }: PageProps) {
 
   const {
     VC_RaffleName,
-    VC_LicenseNumb,
     VC_RaffleLocation,
     Dec_MoneyRaised,
     Txt_GameDetails,
