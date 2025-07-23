@@ -22,11 +22,12 @@ interface PageProps {
 }
 
 export default function RafflePage({ params }: PageProps) {
+  console.log(params)
   const raffleId = params.raffleID;
 
   // const { raffles, loading, error } = useRaffleDetails(raffleId);
   const { restData, isLoading, isError } = useRaffleREST(raffleId);
-  const { charityData: bannerData, isLoading: loadingBanner } = useBannerREST(raffleId);
+  const { charityData: bannerData, isLoading: loadingBanner } = useBannerREST(restData[0]?.obj_RaffleData?.Guid_CharityId);
 
   if (isLoading || loadingBanner) return <p>Loading...</p>;
   if (isError) return <p>Error loading raffle data.</p>;
@@ -68,7 +69,7 @@ export default function RafflePage({ params }: PageProps) {
             <div className="lg:col-span-5 lg:row-end-1">
               <img
                 src={VC_BannerLocation}
-                alt={VC_RaffleName}
+                alt={`Image of ${VC_RaffleName}`}
                 className="aspect-4/2 w-full rounded-lg bg-gray-100 object-cover"
               />
             </div>

@@ -4,8 +4,8 @@ import useSWR from 'swr';
 
 const fetcher = (url) => fetch(url).then(res => res.json())
 
-export default function useBannerREST(id){
-    const getRaffleBannerUrl = SERVICE_URL + '/Banner/'+ id + '/50';
+export default function useBannerREST(charityId){
+    const getRaffleBannerUrl = SERVICE_URL + '/Banner/'+ charityId + '/1';
     const { data, error, isLoading } = useSWR(getRaffleBannerUrl, fetcher);
     const charityData = Array.isArray(data) ? data : [data]
     return {
