@@ -8,6 +8,7 @@ import RaffleList from '@/components/raffle-list'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import useGetAllRaffles from '../hooks/useGetAllRaffles'
+import useBannerREST from '../hooks/useBannerRest'
 
 interface PageProps {
   searchParams: { page?: string }
@@ -15,6 +16,7 @@ interface PageProps {
 
 export default function RafflesPage({ searchParams }: PageProps) {
   const { raffleList, isRaffleLoading, isRaffleError } = useGetAllRaffles()
+
 
   const filteredRaffles = useMemo(() => {
     if (!raffleList || raffleList.length === 0) return []
@@ -27,7 +29,7 @@ export default function RafflesPage({ searchParams }: PageProps) {
 
   // pagination
   const currentPage = Math.max(1, parseInt(searchParams.page || '1', 10))
-  const perPage = 3
+  const perPage = 9
   const totalPages = Math.ceil(filteredRaffles.length / perPage)
   const paginated = filteredRaffles.slice(
     (currentPage - 1) * perPage,
