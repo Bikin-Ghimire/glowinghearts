@@ -22,7 +22,6 @@ interface PageProps {
 }
 
 export default function RafflePage({ params }: PageProps) {
-  console.log(params)
   const raffleId = params.raffleID;
 
   // const { raffles, loading, error } = useRaffleDetails(raffleId);

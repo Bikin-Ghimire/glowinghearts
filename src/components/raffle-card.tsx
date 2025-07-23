@@ -10,10 +10,8 @@ interface RaffleCardProps {
 }
 
 export const RaffleCard = ({ raffle }: RaffleCardProps) => {
-    console.log(raffle)
     const { Guid_CharityId } = raffle;
   const { charityData: banner, isLoading } = useBannerREST(Guid_CharityId)
-  console.log(banner)
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
