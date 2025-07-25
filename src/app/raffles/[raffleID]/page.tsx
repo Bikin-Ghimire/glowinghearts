@@ -14,6 +14,7 @@ import PrizesTable from '@/components/prizes'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
+import RafflePageSkeleton from '@/components/RaffleListShimmer'
 
 const CountdownTimer = dynamic(() => import('@/components/countdown-timer'), { ssr: false })
 
@@ -28,7 +29,8 @@ export default function RafflePage({ params }: PageProps) {
   const { restData, isLoading, isError } = useRaffleREST(raffleId);
   const { charityData: bannerData, isLoading: loadingBanner } = useBannerREST(raffleId);
 
-  if (isLoading || loadingBanner) return <p>Loading...</p>;
+  // if (isLoading || loadingBanner) return <p>Loading...</p>;
+  if (isLoading || loadingBanner) return <RafflePageSkeleton />
   if (isError) return <p>Error loading raffle data.</p>;
 
   const raffleData = restData?.[0]?.obj_RaffleData;
