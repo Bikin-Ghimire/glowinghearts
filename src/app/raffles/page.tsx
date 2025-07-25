@@ -1,3 +1,5 @@
+
+// new code
 'use client'
 import { useMemo } from 'react'
 import { Container } from '@/components/container'
@@ -9,35 +11,26 @@ import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid
 import Link from 'next/link'
 import useGetAllRaffles from '../hooks/useGetAllRaffles'
 import useBannerREST from '../hooks/useBannerRest'
+import useGetPaginatedRaffles from '../hooks/useGetPaginatedRaffles'
+import RafflePageSkeleton from '@/components/RaffleListShimmer'
 
 interface PageProps {
   searchParams: { page?: string }
 }
 
+
 export default function RafflesPage({ searchParams }: PageProps) {
-  const { raffleList, isRaffleLoading, isRaffleError } = useGetAllRaffles()
-
-
-  const filteredRaffles = useMemo(() => {
-    if (!raffleList || raffleList.length === 0) return []
-    const { obj_Raffles } = raffleList[0] || {}
-
-    return (obj_Raffles || [])
-      .filter(r => new Date(r.Dt_SalesClose) > new Date())
-      .sort((a, b) => new Date(a.Dt_SalesClose).getTime() - new Date(b.Dt_SalesClose).getTime())
-  }, [raffleList])
-
-  // pagination
   const currentPage = Math.max(1, parseInt(searchParams.page || '1', 10))
-  const perPage = 9
-  const totalPages = Math.ceil(filteredRaffles.length / perPage)
-  const paginated = filteredRaffles.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
-  )
+  const perPage = 3
 
-  if (isRaffleLoading) return <div className="text-center py-10">Loading raffles...</div>
-  if (isRaffleError) return <div className="text-center py-10 text-red-500">Failed to load raffles.</div>
+  const { raffles, total, isLoading, error } = useGetPaginatedRaffles(currentPage, perPage)
+
+  const totalPages = Math.ceil(total / perPage)
+
+  // if (isLoading) return <div className="text-center py-10">Loading raffles...</div>
+  //Shimmer Loadings
+  if (isLoading) return <RafflePageSkeleton />
+  if (error) return <div className="text-center py-10 text-red-500">Failed to load raffles.</div>
 
   return (
     <main className="overflow-hidden">
@@ -54,11 +47,11 @@ export default function RafflesPage({ searchParams }: PageProps) {
             </h2>
             <p className="mt-4 text-xl/8 text-gray-600">Support a cause. Win big.</p>
           </div>
-          <RaffleList raffles={paginated} />
+          <RaffleList raffles={raffles} />
         </div>
       </section>
 
-      {/* pagination */}
+      {/* Pagination */}
       <nav className="flex items-center justify-between border-t border-gray-200 px-6 lg:px-8 mx-auto max-w-7xl mb-10">
         <div className="flex-1">
           {currentPage > 1 && (
