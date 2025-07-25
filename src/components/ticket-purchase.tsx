@@ -1,3 +1,4 @@
+// new code
 'use client'
 import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
@@ -6,36 +7,34 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 export interface TicketTier {
   Guid_BuyIn: number | string
-  Int_NumbTicket: string  // e.g. "50"
-  Dec_Price: number              // e.g. 50
+  Int_NumbTicket: string
+  Dec_Price: number
   description?: string
 }
 
 interface TicketPurchaseProps {
-  /** Pass in your raffle.tickets array */
   tickets: TicketTier[]
   raffleID: string
 }
 
 export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProps) {
-  // initialize counts keyed by Guid_BuyIn
   const [counts, setCounts] = useState<Record<string, number>>(
     tickets.reduce((acc, t) => ({ ...acc, [t.Guid_BuyIn]: 0 }), {})
   )
+
+  const [isAgeConfirmed, setIsAgeConfirmed] = useState(false) // State for age confirmation
 
   const increment = (Guid_BuyIn: string | number) =>
     setCounts(c => ({ ...c, [Guid_BuyIn]: c[Guid_BuyIn] + 1 }))
   const decrement = (Guid_BuyIn: string | number) =>
     setCounts(c => ({ ...c, [Guid_BuyIn]: Math.max((c[Guid_BuyIn] || 0) - 1, 0) }))
 
-  // calculate total cost
   const total = tickets.reduce(
     (sum, t) => sum + (counts[t.Guid_BuyIn] || 0) * t.Dec_Price,
     0
   )
-  
+
   const handleCheckout = async () => {
-    // build an array of selected tickets with quantity
     const selectedTickets = tickets
       .filter(t => (counts[t.Guid_BuyIn] || 0) > 0)
       .map(t => ({
@@ -46,15 +45,14 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
         Total_Price: t.Dec_Price * counts[t.Guid_BuyIn]
       }))
 
-      // build payload with raffle Guid
-      const payload = {
-        tickets: selectedTickets,
-        raffleId: raffleID,
-        total_price: total
-      }
-    if (selectedTickets.length === 0) return
+    const payload = {
+      tickets: selectedTickets,
+      raffleId: raffleID,
+      total_price: total
+    }
 
-    // call your backend to create a Stripe Checkout session
+    if (selectedTickets.length === 0 || !isAgeConfirmed) return
+
     const res = await fetch('/api/checkout-sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -63,9 +61,6 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
 
     const { sessionId } = await res.json()
 
-    console.log('[checkout] Session ID:', sessionId)
-
-      // redirect to Stripe Checkout
     const stripe = await stripePromise
     const { error } = await stripe!.redirectToCheckout({ sessionId })
     if (error) console.error(error)
@@ -73,10 +68,8 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
 
   return (
     <div className="max-w-md mx-auto space-y-6">
-      {/* Header */}
       <h2 className="text-2xl font-semibold text-gray-900 text-center">Purchase Tickets</h2>
 
-      {/* Ticket bundle rows */}
       {tickets.map((t) => (
         <div key={t.Guid_BuyIn} className="flex items-center justify-between">
           <span className="text-gray-800">
@@ -100,16 +93,25 @@ export default function TicketPurchase({ tickets, raffleID }: TicketPurchaseProp
         </div>
       ))}
 
-      {/* Total summary */}
       <div className="flex items-center justify-between">
         <span className="font-bold text-gray-900">Total:</span>
         <span className="font-bold text-gray-900">${total}</span>
       </div>
 
-      {/* Purchase button */}
+      {/* Age confirmation checkbox */}
+      <label className="flex items-center space-x-2 text-sm text-gray-700">
+        <input
+          type="checkbox"
+          checked={isAgeConfirmed}
+          onChange={() => setIsAgeConfirmed(prev => !prev)}
+          className="form-checkbox h-4 w-4 text-indigo-600"
+        />
+        <span>I confirm that I am 18 years or older</span>
+      </label>
+
       <button
         onClick={handleCheckout}
-        disabled={total === 0}
+        disabled={total === 0 || !isAgeConfirmed} // adding age confirmation flag
         className="w-full py-2 rounded bg-indigo-600 text-white cursor-pointer hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {total === 0 ? 'Purchase Tickets' : 'Checkout'}
