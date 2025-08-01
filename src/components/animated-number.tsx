@@ -14,31 +14,30 @@ export function AnimatedNumber({
   start,
   decimals = 0,
 }: {
-  end: number
-  start?: number
+  end: number | null | undefined
+  start?: number | null | undefined
   decimals?: number
 }) {
-  // default start at half of end if no start prop provided
-  const initial = start ?? end / 2
+  // ensure valid numbers; fallback to 0 if null/NaN
+  const safeEnd = typeof end === 'number' && !isNaN(end) ? end : 0
+  const safeStart = typeof start === 'number' && !isNaN(start) ? start : safeEnd / 2
+
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.5 })
 
-  // animate value
-  const value = useMotionValue(initial)
+  const value = useMotionValue(safeStart)
   const spring = useSpring(value, { damping: 10, stiffness: 100 })
 
-  // format with commas and specified decimals
   const display = useTransform(spring, (num) =>
-    num
-      .toLocaleString(undefined, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })
+    num.toLocaleString(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })
   )
 
   useEffect(() => {
-    value.set(isInView ? end : initial)
-  }, [end, initial, isInView, value])
+    value.set(isInView ? safeEnd : safeStart)
+  }, [safeEnd, safeStart, isInView, value])
 
   return <motion.span ref={ref}>{display}</motion.span>
 }
