@@ -16,8 +16,8 @@ export default function useGetPaginatedRaffles(page: number, perPage = 3) {
     revalidateOnFocus: false,
   })
 
-  const raffles = data?.obj_Raffles ?? []
-  const total = 9
+  const raffles = data?.obj_Raffles
+  const total = data?.Int_NumbRaffle;
 
   return {
     raffles,

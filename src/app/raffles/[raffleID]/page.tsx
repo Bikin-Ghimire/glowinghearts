@@ -15,6 +15,8 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
 import RafflePageSkeleton from '@/components/RaffleListShimmer'
+import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton } from 'next-share'
+import { SERVICE_URL } from '@/constants/raffleConstants'
 
 const CountdownTimer = dynamic(() => import('@/components/countdown-timer'), { ssr: false })
 
@@ -46,6 +48,7 @@ export default function RafflePage({ params }: PageProps) {
     Dt_SalesClose,
     obj_BuyIns,
     obj_Prizes,
+    Int_DrawStatus
   } = raffleData;
   // console.log(raffleData)
   const { VC_BannerLocation } = bannerData?.[0]?.obj_Banner?.[0] || {};
@@ -75,7 +78,7 @@ export default function RafflePage({ params }: PageProps) {
             </div>
 
             {/* Raffle details */}
-            <div className="mx-auto mt-14 max-w-2xl sm:mt-16 lg:col-span-2 lg:row-span-2 lg:row-end-2 lg:mt-0 lg:max-w-none">
+            {Int_DrawStatus === 2 && <div className="mx-auto mt-14 max-w-2xl sm:mt-16 lg:col-span-2 lg:row-span-2 lg:row-end-2 lg:mt-0 lg:max-w-none">
               <div className="text-center p-6 bg-[{raffle.primary_color}] rounded-2xl border-2 border-gray-300 text-[#{raffle.font_color}] max-w-xs mx-auto">
                 {/* Big raised amount */}
                 <p className="text-5xl font-extrabold tracking-tight sm:text-6xl animate-pulse [animation-duration:1s] text-[#b060ff]">
@@ -109,9 +112,31 @@ export default function RafflePage({ params }: PageProps) {
 
               {/* Ticket Purchase */}
               <div className="mt-10 border-t border-gray-200 pt-10">
-                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId} />
+                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId}/>
               </div>
-            </div>
+            </div> }
+            {Int_DrawStatus !== 2 && <div className="mx-auto mt-14 max-w-2xl sm:mt-16 lg:col-span-2 lg:row-span-2 lg:row-end-2 lg:mt-0 lg:max-w-none">
+              <div className="text-center p-6 bg-[{raffle.primary_color}] rounded-2xl border-2 border-gray-300 text-[#{raffle.font_color}] max-w-xs mx-auto">
+                {/* Big raised amount */}
+                <p className="text-5xl font-extrabold tracking-tight sm:text-6xl animate-pulse [animation-duration:1s] text-[#b060ff]">
+                  $<AnimatedNumber end={isNaN(Dec_MoneyRaised) || Dec_MoneyRaised == null ? 0 : Dec_MoneyRaised} decimals={0} />
+                </p>
+
+                {/* Smaller “Jackpot” label */}
+                <p className="mt-2 text-2xl font-bold text-gray-600 sm:text-3xl">
+                  Amount Raised
+                </p>
+
+              </div>
+              {/* Ticket Sales End Time */}
+              <div className="mt-10 border-t border-gray-200 pt-10">
+                <div className="text-center max-w-xs mx-auto">
+                  <p className="text-xl font-bold tracking-tight text-gray-900">
+                    Ticket Sales Ended
+                  </p>
+                </div>
+              </div>
+            </div> }
 
             <div className="mx-auto mt-16 w-full max-w-2xl lg:col-span-5 lg:mt-0 lg:max-w-none">
               {/* Raffle Details */}
@@ -136,10 +161,10 @@ export default function RafflePage({ params }: PageProps) {
 
               {/* Share */}
               <div className="border-gray-200 mb-10">
-                <h3 className="text-sm font-medium text-gray-900">Share</h3>
-                <ul role="list" className="mt-4 flex items-center space-x-6">
+                {/* <h3 className="text-sm font-medium text-gray-900 mt-10">Share</h3> */}
+                {/* <ul role="list" className="mt-4 flex items-center space-x-6">
                   <li>
-                    <a href="#" className="flex size-6 items-center justify-center text-gray-400 hover:text-gray-500">
+                    <a href="" className="flex size-6 items-center justify-center text-gray-400 hover:text-gray-500">
                       <span className="sr-only">Share on Facebook</span>
                       <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" className="size-5">
                         <path
@@ -170,8 +195,23 @@ export default function RafflePage({ params }: PageProps) {
                       </svg>
                     </a>
                   </li>
-                </ul>
+                </ul> */}
+                <h3 className="text-sm font-medium text-gray-900 mt-10">Share</h3>
+                <div className="mt-4 flex items-center space-x-4">
+                  <FacebookShareButton url={`${SERVICE_URL}/raffles/${raffleId}`} quote={`Check out this raffle: ${VC_RaffleName}`}>
+                    <FacebookIcon size={32} round />
+                  </FacebookShareButton>
+
+                  <TwitterShareButton url={`${SERVICE_URL}/raffles/${raffleId}`} title={`Join this raffle: ${VC_RaffleName}`}>
+                    <TwitterIcon size={32} round />
+                  </TwitterShareButton>
+
+                  <WhatsappShareButton url={`${SERVICE_URL}/raffles/${raffleId}`} title={`Join this raffle: ${VC_RaffleName}`}>
+                    <WhatsappIcon size={32} round />
+                  </WhatsappShareButton>
+                </div>
               </div>
+
 
 
               <TabGroup>

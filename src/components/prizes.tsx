@@ -3,7 +3,7 @@ import React from 'react'
 
 export interface Prize {
   order: number
-  title: string
+  Dec_Value: string
   VC_Description: string
   Dt_Draw: string
   winnerId: string
@@ -33,7 +33,7 @@ export default function PrizesTable({ prizes }: PrizesTableProps) {
                 scope="col"
                 className="w-1/4 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
-                Title
+                Prize Value
               </th>
               <th
                 scope="col"
@@ -61,8 +61,8 @@ export default function PrizesTable({ prizes }: PrizesTableProps) {
                 <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                   {/* Mobile stacked */}
                   <dl className="lg:hidden">
-                    <dt className="sr-only">Title</dt>
-                    <dd className="block font-semibold text-gray-900 truncate">{p.title}</dd>
+                    <dt className="sr-only">Prize</dt>
+                    <dd className="block font-semibold text-gray-900 truncate">${p.Dec_Value}</dd>
                     <dt className="sr-only">Description</dt>
                     <dd className="mt-1 text-gray-500 truncate">$ {p.VC_Description}</dd>
                     <dt className="sr-only">Date</dt>
@@ -70,11 +70,11 @@ export default function PrizesTable({ prizes }: PrizesTableProps) {
                   </dl>
                   {/* Desktop title only */}
                   <div className="hidden lg:block">
-                    {p.title}
+                    $ {p.Dec_Value}
                   </div>
                 </td>
                 <td className="hidden lg:table-cell px-3 py-4 text-sm text-gray-500">
-                  $ {p.VC_Description}
+                  {p.VC_Description}
                 </td>
                 <td className="hidden lg:table-cell px-3 py-4 text-sm text-gray-500">
                   {formatDate(p.Dt_Draw)}
