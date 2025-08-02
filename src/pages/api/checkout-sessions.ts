@@ -23,6 +23,7 @@ export default async function handler(
       tickets: { Int_NumbTicket: string; Dec_Price: number; quantity: number; Guid_BuyIn: string; Total_Price: number; }[]
     }
     const raffleID = req.body.raffleId;
+    const charityKey = req.body.charity_key;
     if (!tickets?.length) {
       return res.status(400).json({ error: 'No tickets selected' })
     }
@@ -44,24 +45,34 @@ export default async function handler(
       Int_PackageCount: t.quantity
     }))
     // Create the Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items,
-      mode: 'payment',
-      billing_address_collection: 'required',
-      phone_number_collection: { enabled: true },
-      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/raffles/${raffleID}`,
-      metadata: {
-        raffleID: raffleID,
-        obj_BuyIns: JSON.stringify(obj_BuyIns)
+    const session = await stripe.checkout.sessions.create(
+      {
+        payment_method_types: ['card'],
+        line_items,
+        mode: 'payment',
+        billing_address_collection: 'required',
+        phone_number_collection: { enabled: true },
+        success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}&account=${charityKey}`,
+        cancel_url: `${req.headers.origin}/raffles/${raffleID}`,
+        metadata: {
+          raffleID: raffleID,
+          obj_BuyIns: JSON.stringify(obj_BuyIns),
+        },
       }
-    })
+      ,
+      {
+        stripeAccount: charityKey,
+      }
+    )
+
 
     // console.log('✅ [checkout] Session created:', session.id)
     return res.status(200).json({ sessionId: session.id })
-  } catch (err) {
-    console.error('❌ [checkout] Error:', err)
-    return res.status(500).json({ error: 'Internal server error' })
-  }
+  } catch (err: any) {
+  console.error('❌ Stripe Error:', err);
+
+  return res.status(500).json({
+    error: err?.message || 'Internal server error',
+  });
+}
 }

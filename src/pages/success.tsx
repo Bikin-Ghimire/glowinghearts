@@ -193,6 +193,8 @@ const Success: NextPage<SuccessProps> = ({ session, raffle, VC_BannerLocation, t
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const sessionId = ctx.query.session_id as string
+  const accountId = ctx.query.account as string
+
 
   if (!sessionId) {
     return {
@@ -203,7 +205,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // Fetch session from Stripe with expanded details
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['line_items', 'customer_details'],
-  })
+  },
+    {
+      stripeAccount: accountId,
+    }
+  )
 
   const customer = session.customer_details
   const amount = session.amount_total || 0
@@ -247,7 +253,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     const data = await response.json()
     const allTickets = data?.obj_Packages?.obj_Packages?.flatMap(pkg => pkg.obj_Tickets);
-    ticketNumbers = allTickets ?? []
+    ticketNumbers = allTickets
   } catch (error) {
     console.error('Error posting purchase to backend:', error)
     // Optionally handle fallback or pass error info to page props

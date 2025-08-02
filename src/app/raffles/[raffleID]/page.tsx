@@ -48,10 +48,11 @@ export default function RafflePage({ params }: PageProps) {
     Dt_SalesClose,
     obj_BuyIns,
     obj_Prizes,
-    Int_DrawStatus
+    Int_DrawStatus,
+    VC_CharityKey
   } = raffleData;
-  // console.log(raffleData)
-  const { VC_BannerLocation } = bannerData?.[0]?.obj_Banner?.[0] || {};
+  // console.log(VC_CharityKey)
+  const { VC_BannerLocation } = bannerData?.[0]?.obj_Banner?.[0];
 
   return (
     <main className="overflow-hidden">
@@ -112,7 +113,7 @@ export default function RafflePage({ params }: PageProps) {
 
               {/* Ticket Purchase */}
               <div className="mt-10 border-t border-gray-200 pt-10">
-                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId}/>
+                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId} charity_key={VC_CharityKey}/>
               </div>
             </div> }
             {Int_DrawStatus !== 2 && <div className="mx-auto mt-14 max-w-2xl sm:mt-16 lg:col-span-2 lg:row-span-2 lg:row-end-2 lg:mt-0 lg:max-w-none">
@@ -211,9 +212,6 @@ export default function RafflePage({ params }: PageProps) {
                   </WhatsappShareButton>
                 </div>
               </div>
-
-
-
               <TabGroup>
                 <div className="border-b border-gray-200">
                   <TabList className="-mb-px flex space-x-8">
