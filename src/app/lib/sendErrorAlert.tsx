@@ -16,7 +16,7 @@ export async function sendErrorAlert(subject: string, errorDetails: string) {
         const info = await transporter.sendMail({
             from: `"GHF 5050 Alerts" <${process.env.SMTP_USER}>`,
             to: process.env.EMAIL_TO,
-            cc: 'aaquib.ont@gmail.com',
+            cc: process.env.CC,
             subject: subject,
             text: errorDetails,
         })
