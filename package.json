@@ -19,6 +19,7 @@
     "dayjs": "^1.11.12",
     "feed": "^4.2.2",
     "framer-motion": "^11.2.10",
+    "ipapi.co": "^0.3.0",
     "next": "^14.2.30",
     "next-share": "^0.27.0",
     "nodemailer": "^7.0.5",
