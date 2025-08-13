@@ -52,8 +52,7 @@ export default function RafflePage({ params }: PageProps) {
     VC_CharityKey,
     VC_LicenseNumb
   } = raffleData;
-  console.log(raffleData)
-  // console.log(VC_CharityKey)
+  
   const { VC_BannerLocation } = bannerData?.[0]?.obj_Banner?.[0];
 
   return (
@@ -107,9 +106,9 @@ export default function RafflePage({ params }: PageProps) {
                   </p>
 
                   {/* Smaller “Jackpot” label */}
-                  <p className="mt-2 text-2xl font-bold sm:text-3xl">
+                  <div className="mt-2 text-2xl font-bold sm:text-3xl">
                     <CountdownTimer endDate={Dt_SalesClose} />
-                  </p>
+                  </div>
                 </div>
               </div>
 
