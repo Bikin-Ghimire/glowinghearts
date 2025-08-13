@@ -132,6 +132,7 @@ export default function RafflePage({ params }: PageProps) {
               </div>
               {/* Ticket Sales End Time */}
               <div className="mt-10 border-t border-gray-200 pt-10">
+                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId} charity_key={VC_CharityKey} startDate={Dt_SalesOpen} endDate={Dt_SalesClose} />
                 <div className="text-center max-w-xs mx-auto">
                   <p className="text-xl font-bold tracking-tight text-gray-900">
                     Raffle Not Started
