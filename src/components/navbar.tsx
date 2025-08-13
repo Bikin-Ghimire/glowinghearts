@@ -85,7 +85,7 @@ export function Navbar({ banner }: { banner?: React.ReactNode }) {
             <PlusGridItem className="py-3">
               <Link href="/" title="Home">
                 {/* <Logo className="h-9" /> */}
-                <Image src={logo} alt="Glowing Hearts Fundraising" width={120} height={40}></Image>
+                <Image src={logo} alt="Glowing Hearts Fundraising" style={{width: 150, height: 100}}></Image>
               </Link>
             </PlusGridItem>
             {banner && (
