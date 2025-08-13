@@ -23,9 +23,10 @@ interface SuccessProps {
   }
   ticketNumbers: string[]
   VC_BannerLocation: string
+  postError: boolean
 }
 
-const Success: NextPage<SuccessProps> = ({ session, raffle, VC_BannerLocation, ticketNumbers }) => {
+const Success: NextPage<SuccessProps> = ({ session, raffle, VC_BannerLocation, ticketNumbers, postError }) => {
   const {
     id: orderNumber,
     created,
@@ -64,6 +65,17 @@ const Success: NextPage<SuccessProps> = ({ session, raffle, VC_BannerLocation, t
             Your order <span className="font-mono font-bold text-black">{orderNumber}</span> was confirmed on{' '}
             <time dateTime={new Date(created * 1000).toISOString()}>{purchaseDate}</time>.
           </p>
+
+          {postError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-center">
+              Payment was successful, but we couldn’t confirm your tickets with our backend right now.
+              Don’t worry — our system will process this automatically, but if you don’t receive your
+              tickets by email soon, please contact{' '}
+              <a href="mailto:info@glowinghearts5050.com" className="underline">
+                info@glowinghearts5050.com
+              </a>.
+            </div>
+          )}
 
           {/* Order details */}
           <section className="bg-gray-50 p-4 rounded shadow-sm">
@@ -247,6 +259,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // // Post to your backend Sale API and get ticket numbers
 
   let ticketNumbers: string[] = []
+  let postError = false;
 
   try {
     const response = await fetch(`${SERVICE_URL}/Sale/${raffleID}`, {
@@ -255,6 +268,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       body: JSON.stringify(payload),
     })
     if (!response.ok) {
+      postError = true
       throw new Error(`Backend API error: ${response.statusText}`)
     }
 
@@ -262,6 +276,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const allTickets = data?.obj_Packages?.obj_Packages?.flatMap(pkg => pkg.obj_Tickets);
     ticketNumbers = allTickets
   } catch (error) {
+    postError = true
     console.error('Error posting purchase to backend:', error)
 
     await sendErrorAlert(
@@ -312,7 +327,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       session,
       raffle,
       VC_BannerLocation,
-      ticketNumbers
+      ticketNumbers,
+      postError
     },
   }
 }

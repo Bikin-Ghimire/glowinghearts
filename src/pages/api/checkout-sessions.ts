@@ -78,9 +78,6 @@ export default async function handler(
       }
     )
 
-
-    console.log('✅ [checkout] Session created:', session.id)
-    console.log('charity key', charityKey)
     return res.status(200).json({ sessionId: session.id })
   } catch (err: any) {
     console.error('❌ Stripe Error:', err);
