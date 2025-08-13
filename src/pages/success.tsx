@@ -48,8 +48,8 @@ type SessionData = {
 
 export default function SuccessPage() {
   const params = useSearchParams()
-  const sessionId = params.get('session_id') || '' // from success_url
-  const accountId = params.get('account') || '' // Stripe Connect account id
+  const sessionId = params?.get('session_id') || '' // from success_url
+  const accountId = params?.get('account') || '' // Stripe Connect account id
 
   const [data, setData] = useState<SessionData | null>(null)
   const [loading, setLoading] = useState(true)

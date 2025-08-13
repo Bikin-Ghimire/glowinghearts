@@ -52,7 +52,7 @@ export default function RafflePage({ params }: PageProps) {
     VC_CharityKey,
     VC_LicenseNumb
   } = raffleData;
-  
+
   const { VC_BannerLocation } = bannerData?.[0]?.obj_Banner?.[0];
 
   return (
@@ -114,7 +114,7 @@ export default function RafflePage({ params }: PageProps) {
 
               {/* Ticket Purchase */}
               {new Date(Dt_SalesOpen) <= new Date() && <div className="mt-10 border-t border-gray-200 pt-10">
-                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId} charity_key={VC_CharityKey} />
+                <TicketPurchase tickets={obj_BuyIns} raffleID={raffleId} charity_key={VC_CharityKey} startDate={Dt_SalesOpen} endDate={Dt_SalesClose} />
               </div>}
             </div>}
             {Int_DrawStatus === 1 && <div className="mx-auto mt-14 max-w-2xl sm:mt-16 lg:col-span-2 lg:row-span-2 lg:row-end-2 lg:mt-0 lg:max-w-none">
