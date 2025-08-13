@@ -23,6 +23,7 @@
     "micro": "^10.0.1",
     "next": "^14.2.30",
     "next-share": "^0.27.0",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.5",
     "react": "^18",
     "react-dom": "^18",

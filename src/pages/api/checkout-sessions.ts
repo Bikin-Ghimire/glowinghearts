@@ -74,6 +74,7 @@ export default async function handler(
       desired - now >= THIRTY_MIN ? Math.floor(desired / 1000) : undefined
 
     // Create the Checkout Session
+    
     const session = await stripe.checkout.sessions.create(
       {
         payment_method_types: ['card'],
