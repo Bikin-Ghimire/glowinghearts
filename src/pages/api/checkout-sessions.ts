@@ -31,6 +31,9 @@ export default async function handler(
     const charityKey = req.body.charity_key
     const isAgeConfirmed = req.body.isAgeConfirmed
     const isTCConfirmed = req.body.isTCConfirmed
+    const client_ip = req.body.client_ip;
+    const clien_geo = req.body.client_geo;
+
     if (!tickets?.length) {
       return res.status(400).json({ error: 'No tickets selected' })
     }
@@ -74,7 +77,7 @@ export default async function handler(
       desired - now >= THIRTY_MIN ? Math.floor(desired / 1000) : undefined
 
     // Create the Checkout Session
-    
+
     const session = await stripe.checkout.sessions.create(
       {
         payment_method_types: ['card'],
@@ -97,6 +100,8 @@ export default async function handler(
           isAgeConfirmed: isAgeConfirmed,
           isTCConfirmed: isTCConfirmed,
           obj_BuyIns: JSON.stringify(obj_BuyIns),
+          client_ip: client_ip,
+          clien_geo: clien_geo,
           salesEndISO: new Date(salesEnd).toISOString(), // (optional) helpful for debugging
         },
         ...(expiresAtSeconds ? { expires_at: expiresAtSeconds } : {}),
@@ -104,7 +109,10 @@ export default async function handler(
       { stripeAccount: charityKey },
     )
 
+
+    // console.log('Test Meta Data' + JSON.stringify(session?.metadata))
     return res.status(200).json({ sessionId: session.id })
+
   } catch (err: any) {
     console.error('❌ Stripe Error:', err)
     return res

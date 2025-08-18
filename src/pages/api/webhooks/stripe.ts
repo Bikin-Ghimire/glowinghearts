@@ -52,33 +52,68 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const raffleID = session.metadata?.raffleID
     if (!raffleID) return res.status(400).send('Missing raffleID in session.metadata')
 
-    // Build payload for your Save Purchase API
-    const Guid_PurchaseId = session.id // important: idempotent key = session.id
-    const c = session.customer_details
-    const amount = session.amount_total || 0
-    const createdISO = new Date(session.created * 1000).toISOString()
-    const obj_BuyIns = safeJson(session.metadata?.obj_BuyIns, [])
-    const fullName =
-      session.custom_fields?.find(f => f.key === 'full_name')?.text?.value ||
-      c?.name || ''
+      /**
+       * (Optional but recommended) Guard against late payments:
+       * Check with your backend if sales are already closed.
+       * If yes, refund and acknowledge (but do not fulfill).
+       */
+      try {
+        const rRes = await fetch(`${SERVICE_URL}/Raffle/${raffleID}`)
+        const rData = await rRes.json()
+        const salesEndStr = rData?.obj_RaffleData?.Dt_SalesClose
+        const salesEnd = salesEndStr ? new Date(salesEndStr).getTime() : 0
+        if (salesEnd && Date.now() >= salesEnd) {
+          const piId = typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id
+          if (piId) {
+            await stripe.refunds.create(
+              { payment_intent: piId, reason: 'requested_by_customer' },
+              { stripeAccount: connectedAccountId } // Connect refund
+            )
+            console.log(`⛔️ Post-close payment refunded for session ${session.id}`)
+          }
+          return res.json({ received: true, ignored: 'after_close' })
+        }
+      } catch (e) {
+        console.warn('⚠️ salesEnd check failed; proceeding with fulfillment.')
+      }
+
+      // ---------- Build payload for your backend Save Purchase API ----------
+      const Guid_PurchaseId = session.id // idempotent: use session.id
+      const customer = session.customer_details
+      const amount = session.amount_total || 0
+      const createdISO = new Date(session.created * 1000).toISOString()
+      const obj_BuyIns = safeJson(session.metadata?.obj_BuyIns, [])
+      const isAgeConfirmed = session.metadata?.isAgeConfirmed
+      const isTCConfirmed = session.metadata?.isTCConfirmed
+      const client_ip = session.metadata?.client_ip;
+      const client_geo = session.metadata?.clien_geo;
+      // Custom field "full_name" added during checkout session creation
+      const fullName =
+        session.custom_fields?.find(f => f.key === 'full_name')?.text?.value ||
+        customer?.name ||
+        ''
 
     const payload = {
-      Guid_RaffleId: raffleID,
-      Guid_PurchaseId,
-      Dt_Purchased: createdISO.replace('T', ' ').slice(0, 19),
-      Dec_PurchaseAmount: amount / 100,
-      VC_PlayerEmail: c?.email ?? '',
-      VC_PlayerFullName: fullName,
-      VC_PlayerAddr1: c?.address?.line1 ?? '',
-      VC_PlayerAddr2: c?.address?.line2 ?? '',
-      VC_PlayerCity: c?.address?.city ?? '',
-      VC_PlayerProvince: c?.address?.state ?? '',
-      VC_PlayerPostalCode: c?.address?.postal_code ?? '',
-      VC_PlayerPhone: c?.phone,
-      Int_AgeVerified: session.metadata?.isAgeConfirmed ? 1 : 0,
-      Int_TC_Confirm: session.metadata?.isTCConfirmed ? 1 : 0,
-      obj_BuyIns,
-    }
+        Guid_RaffleId: raffleID,
+        Guid_PurchaseId,
+        Dt_Purchased: createdISO.replace('T', ' ').slice(0, 19),
+        Dec_PurchaseAmount: amount / 100,
+        VC_PlayerEmail: customer?.email ?? '',
+        VC_PlayerFullName: fullName,
+        VC_PlayerAddr1: customer?.address?.line1 ?? '',
+        VC_PlayerAddr2: customer?.address?.line2 ?? '',
+        VC_PlayerCity: customer?.address?.city ?? '',
+        VC_PlayerProvince: customer?.address?.state ?? '',
+        VC_PlayerPostalCode: customer?.address?.postal_code ?? '',
+        VC_PlayerPhone: customer?.phone,
+        Int_AgeVerified: isAgeConfirmed ? 1 : 0,
+        Int_TC_Confirm: isTCConfirmed ? 1 : 0,
+        VC_PurchaseIP: client_ip,
+        VC_GeoLocation: client_geo,
+        obj_BuyIns,
+      }
 
     console.log(`📨 POST ${SERVICE_URL}/Sale/${raffleID}  (purchase=${Guid_PurchaseId})`)
     // 3) CRITICAL: time-box this call; return 4xx on any failure so Stripe retries

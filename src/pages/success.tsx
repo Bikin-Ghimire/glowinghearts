@@ -76,6 +76,11 @@ export default function SuccessPage() {
         <Head>
           <title>Finalizing your purchase…</title>
           <meta name="robots" content="noindex,nofollow" />
+          <link
+            rel="icon"
+            href="/logos/icon.svg"// Path to your custom favicon
+            type="image/svg+xml"
+          />
         </Head>
         <main className="overflow-hidden">
           <GradientBackground />
@@ -94,6 +99,11 @@ export default function SuccessPage() {
         <Head>
           <title>Processing your order…</title>
           <meta name="robots" content="noindex,nofollow" />
+          <link
+            rel="icon"
+            href="/logos/icon.svg" // Path to your custom favicon
+            type="image/svg+xml"
+          />
         </Head>
         <main className="overflow-hidden">
           <GradientBackground />
@@ -121,6 +131,11 @@ export default function SuccessPage() {
       <Head>
         <title>Success - Glowing Hearts Fundraising</title>
         <meta name="description" content="Thank you for your purchase!" />
+        <link
+            rel="icon"
+            href="/logos/icon.svg"// Path to your custom favicon
+            type="image/svg+xml"
+          />
       </Head>
       <main className="overflow-hidden">
         <GradientBackground />
