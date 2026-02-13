@@ -178,8 +178,8 @@ function Contact() {
                   <EnvelopeIcon aria-hidden="true" className="h-7 w-6 text-gray-400" />
                 </dt>
                 <dd>
-                  <a href="mailto:info@glowingheartsfundraising.ca" className="hover:text-gray-900">
-                    info@glowingheartsfundraising.ca
+                  <a href="mailto:info@5050winwin.ca" className="hover:text-gray-900">
+                    info@5050winwin.ca
                   </a>
                 </dd>
               </div>
